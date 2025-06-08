@@ -2,22 +2,18 @@ from fastapi.testclient import TestClient
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
 from app.main import app
 
-from app.config import settings
 from app.database import get_db
 from app.database import Base
 from app.oauth2 import create_access_token
 from app import models
-from alembic import command
 
 
-# SQLALCHEMY_DATABASE_URL = 'postgresql://postgres:password123@localhost:5432/fastapi_test'
-SQLALCHEMY_DATABASE_URL = f'postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}_test'
+# Use SQLite for testing to avoid requiring PostgreSQL
+SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
 
-
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
 
 TestingSessionLocal = sessionmaker(
     autocommit=False, autoflush=False, bind=engine)
