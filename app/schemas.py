@@ -145,3 +145,33 @@ class SimulationResponse(BaseModel):
     strategy_win_counts: dict
     assignments: List[SimulationAssignmentOut]
     timeline: Optional[List[dict]] = None
+
+
+class CardRef(BaseModel):
+    id: int
+    name: str
+    category: str
+
+
+class CardKnowledgeOut(CardRef):
+    owner_player_id: Optional[int]
+    owner_known: bool
+
+
+class PlayerKnowledgeOut(BaseModel):
+    player_id: int
+    name: str
+    confirmed_cards: List[CardRef]
+    possible_cards: List[CardRef]
+
+
+class EnvelopePossibilitiesOut(BaseModel):
+    suspects: List[CardRef]
+    weapons: List[CardRef]
+    rooms: List[CardRef]
+
+
+class GameKnowledgeOut(BaseModel):
+    cards: List[CardKnowledgeOut]
+    players: List[PlayerKnowledgeOut]
+    envelope_possibilities: EnvelopePossibilitiesOut

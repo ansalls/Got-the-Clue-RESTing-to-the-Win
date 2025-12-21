@@ -121,5 +121,6 @@ def update_post(id: int, updated_post: schemas.PostUpdate, db: Session = Depends
         post_query.update(update_data, synchronize_session=False)
 
     db.commit()
+    db.refresh(post)
 
-    return post_query.first()
+    return post

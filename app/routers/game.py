@@ -3,7 +3,7 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from .. import models, schemas, oauth2
+from .. import models, schemas, oauth2, knowledge
 from ..database import get_db
 
 
@@ -90,3 +90,50 @@ def list_players(
     if game.owner_id != current_user.id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized to view this game")
     return db.query(models.Player).filter(models.Player.game_id == game_id).order_by(models.Player.seat_order.asc()).all()
+
+
+@router.get("/{game_id}/knowledge", response_model=schemas.GameKnowledgeOut)
+def get_game_knowledge(
+    game_id: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(oauth2.get_current_user),
+):
+    game = db.query(models.Game).filter(models.Game.id == game_id).first()
+    if not game:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Game not found")
+    if game.owner_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized to view this game")
+
+    snapshot = knowledge.build_game_knowledge(db, game_id)
+    cards_by_id = {card.id: card for card in db.query(models.Card).all()}
+
+    def card_ref(card_id: int) -> schemas.CardRef:
+        card = cards_by_id[card_id]
+        return schemas.CardRef(id=card.id, name=card.name, category=card.category)
+
+    return schemas.GameKnowledgeOut(
+        cards=[
+            schemas.CardKnowledgeOut(
+                id=card.card_id,
+                name=card.name,
+                category=card.category,
+                owner_player_id=card.owner_player_id,
+                owner_known=card.owner_known,
+            )
+            for card in snapshot.cards
+        ],
+        players=[
+            schemas.PlayerKnowledgeOut(
+                player_id=player.player_id,
+                name=player.name,
+                confirmed_cards=[card_ref(card_id) for card_id in player.confirmed_card_ids],
+                possible_cards=[card_ref(card_id) for card_id in player.possible_card_ids],
+            )
+            for player in snapshot.players
+        ],
+        envelope_possibilities=schemas.EnvelopePossibilitiesOut(
+            suspects=[card_ref(card_id) for card_id in snapshot.envelope.suspects],
+            weapons=[card_ref(card_id) for card_id in snapshot.envelope.weapons],
+            rooms=[card_ref(card_id) for card_id in snapshot.envelope.rooms],
+        ),
+    )

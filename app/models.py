@@ -66,3 +66,65 @@ class Player(Base):
                         nullable=False, server_default=text('CURRENT_TIMESTAMP'))
 
     game = relationship("Game", back_populates="players")
+
+
+class Card(Base):
+    __tablename__ = "cards"
+
+    id = Column(Integer, primary_key=True, nullable=False)
+    name = Column(String, nullable=False)
+    category = Column(String, nullable=False)
+
+
+class PlayerCard(Base):
+    __tablename__ = "player_cards"
+
+    id = Column(Integer, primary_key=True, nullable=False)
+    game_id = Column(Integer, ForeignKey(
+        "games.id", ondelete="CASCADE"), nullable=False)
+    player_id = Column(Integer, ForeignKey(
+        "players.id", ondelete="CASCADE"), nullable=False)
+    card_id = Column(Integer, ForeignKey(
+        "cards.id", ondelete="CASCADE"), nullable=False)
+
+    player = relationship("Player")
+    card = relationship("Card")
+
+
+class Suggestion(Base):
+    __tablename__ = "suggestions"
+
+    id = Column(Integer, primary_key=True, nullable=False)
+    game_id = Column(Integer, ForeignKey(
+        "games.id", ondelete="CASCADE"), nullable=False)
+    suggester_id = Column(Integer, ForeignKey(
+        "players.id", ondelete="CASCADE"), nullable=False)
+    suspect_card_id = Column(Integer, ForeignKey(
+        "cards.id", ondelete="CASCADE"), nullable=False)
+    weapon_card_id = Column(Integer, ForeignKey(
+        "cards.id", ondelete="CASCADE"), nullable=False)
+    room_card_id = Column(Integer, ForeignKey(
+        "cards.id", ondelete="CASCADE"), nullable=False)
+    created_at = Column(TIMESTAMP(timezone=True),
+                        nullable=False, server_default=text('CURRENT_TIMESTAMP'))
+
+    suggester = relationship("Player")
+    suspect_card = relationship("Card", foreign_keys=[suspect_card_id])
+    weapon_card = relationship("Card", foreign_keys=[weapon_card_id])
+    room_card = relationship("Card", foreign_keys=[room_card_id])
+
+
+class SuggestionResponse(Base):
+    __tablename__ = "suggestion_responses"
+
+    id = Column(Integer, primary_key=True, nullable=False)
+    suggestion_id = Column(Integer, ForeignKey(
+        "suggestions.id", ondelete="CASCADE"), nullable=False)
+    shower_id = Column(Integer, ForeignKey(
+        "players.id", ondelete="SET NULL"), nullable=True)
+    shown_card_id = Column(Integer, ForeignKey(
+        "cards.id", ondelete="SET NULL"), nullable=True)
+
+    suggestion = relationship("Suggestion")
+    shower = relationship("Player")
+    shown_card = relationship("Card")
