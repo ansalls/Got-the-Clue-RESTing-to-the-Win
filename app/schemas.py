@@ -1,48 +1,14 @@
-from pydantic import BaseModel, EmailStr
 from datetime import datetime
-from typing import Optional, List
+from typing import List, Optional
 
+from pydantic import BaseModel, EmailStr, root_validator
 from pydantic.types import conint
-
-
-class PostBase(BaseModel):
-    title: str
-    content: str
-    published: bool = True
-
-
-class PostCreate(PostBase):
-    pass
-
-
-class PostUpdate(BaseModel):
-    title: Optional[str] = None
-    content: Optional[str] = None
-    published: Optional[bool] = None
 
 
 class UserOut(BaseModel):
     id: int
     email: EmailStr
     created_at: datetime
-
-    class Config:
-        orm_mode = True
-
-
-class Post(PostBase):
-    id: int
-    created_at: datetime
-    owner_id: int
-    owner: UserOut
-
-    class Config:
-        orm_mode = True
-
-
-class PostOut(BaseModel):
-    Post: Post
-    votes: int
 
     class Config:
         orm_mode = True
@@ -65,11 +31,6 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     id: Optional[str] = None
-
-
-class Vote(BaseModel):
-    post_id: int
-    dir: conint(ge=0, le=1)
 
 
 class GameBase(BaseModel):
@@ -110,6 +71,130 @@ class PlayerOut(PlayerBase):
 
 class GameDetail(GameOut):
     players: List[PlayerOut] = []
+
+
+class HandBase(BaseModel):
+    game_id: int
+    player_id: int
+
+
+class HandCreate(HandBase):
+    pass
+
+
+class HandOut(HandBase):
+    id: int
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
+
+
+class EnvelopeBase(BaseModel):
+    game_id: int
+
+
+class EnvelopeCreate(EnvelopeBase):
+    pass
+
+
+class EnvelopeOut(EnvelopeBase):
+    id: int
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
+
+
+class CardBase(BaseModel):
+    name: str
+    card_type: str
+
+
+class CardCreate(CardBase):
+    game_id: int
+    hand_id: Optional[int] = None
+    envelope_id: Optional[int] = None
+    is_unknown: bool = True
+
+    @root_validator
+    def validate_single_location(cls, values):
+        location_flags = [
+            values.get("hand_id") is not None,
+            values.get("envelope_id") is not None,
+            bool(values.get("is_unknown")),
+        ]
+        if sum(location_flags) != 1:
+            raise ValueError("Card must belong to exactly one location.")
+        return values
+
+
+class CardOut(CardBase):
+    id: int
+    game_id: int
+    hand_id: Optional[int]
+    envelope_id: Optional[int]
+    is_unknown: bool
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
+
+
+class SuggestionBase(BaseModel):
+    game_id: int
+    player_id: int
+    suspect_card_id: int
+    weapon_card_id: int
+    room_card_id: int
+
+
+class SuggestionCreate(SuggestionBase):
+    pass
+
+
+class SuggestionOut(SuggestionBase):
+    id: int
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
+
+
+class ShowingBase(BaseModel):
+    suggestion_id: int
+    player_id: int
+    card_id: int
+
+
+class ShowingCreate(ShowingBase):
+    pass
+
+
+class ShowingOut(ShowingBase):
+    id: int
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
+
+
+class TurnOrderBase(BaseModel):
+    game_id: int
+    player_id: int
+    turn_index: conint(ge=1)
+
+
+class TurnOrderCreate(TurnOrderBase):
+    pass
+
+
+class TurnOrderOut(TurnOrderBase):
+    id: int
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
 
 
 class SimulationOverride(BaseModel):
