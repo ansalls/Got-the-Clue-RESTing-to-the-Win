@@ -110,3 +110,38 @@ class PlayerOut(PlayerBase):
 
 class GameDetail(GameOut):
     players: List[PlayerOut] = []
+
+
+class SimulationOverride(BaseModel):
+    player_id: int
+    strategy_key: str
+
+
+class SimulationRequest(BaseModel):
+    user_player_id: int
+    user_strategy: str = "conservative"
+    opponent_strategy: str = "random"
+    iterations: conint(ge=1, le=1000) = 100
+    rounds: conint(ge=1, le=50) = 5
+    include_timeline: bool = False
+    strategy_overrides: List[SimulationOverride] = []
+
+
+class SimulationAssignmentOut(BaseModel):
+    player_id: int
+    name: str
+    strategy_key: str
+    is_user: bool
+
+
+class SimulationResponse(BaseModel):
+    iterations: int
+    rounds: int
+    user_player_id: int
+    user_strategy: str
+    opponent_strategy: str
+    user_win_percentage: float
+    strategy_win_percentages: dict
+    strategy_win_counts: dict
+    assignments: List[SimulationAssignmentOut]
+    timeline: Optional[List[dict]] = None
