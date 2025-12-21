@@ -52,6 +52,10 @@ class Game(Base):
     owner = relationship("User")
     players = relationship("Player", back_populates="game",
                            cascade="all, delete-orphan")
+    suggestions = relationship("Suggestion", back_populates="game",
+                               cascade="all, delete-orphan")
+    showings = relationship("Showing", back_populates="game",
+                            cascade="all, delete-orphan")
 
 
 class Player(Base):
@@ -66,3 +70,46 @@ class Player(Base):
                         nullable=False, server_default=text('CURRENT_TIMESTAMP'))
 
     game = relationship("Game", back_populates="players")
+    suggestions = relationship("Suggestion", back_populates="suggester",
+                               cascade="all, delete-orphan")
+    showings = relationship("Showing", back_populates="showing_player",
+                            cascade="all, delete-orphan")
+
+
+class Suggestion(Base):
+    __tablename__ = "suggestions"
+
+    id = Column(Integer, primary_key=True, nullable=False)
+    game_id = Column(Integer, ForeignKey(
+        "games.id", ondelete="CASCADE"), nullable=False)
+    suggester_id = Column(Integer, ForeignKey(
+        "players.id", ondelete="CASCADE"), nullable=False)
+    suspect = Column(String, nullable=False)
+    weapon = Column(String, nullable=False)
+    room = Column(String, nullable=False)
+    created_at = Column(TIMESTAMP(timezone=True),
+                        nullable=False, server_default=text('CURRENT_TIMESTAMP'))
+
+    game = relationship("Game", back_populates="suggestions")
+    suggester = relationship("Player", back_populates="suggestions")
+    showings = relationship("Showing", back_populates="suggestion",
+                            cascade="all, delete-orphan")
+
+
+class Showing(Base):
+    __tablename__ = "showings"
+
+    id = Column(Integer, primary_key=True, nullable=False)
+    game_id = Column(Integer, ForeignKey(
+        "games.id", ondelete="CASCADE"), nullable=False)
+    suggestion_id = Column(Integer, ForeignKey(
+        "suggestions.id", ondelete="CASCADE"), nullable=False)
+    showing_player_id = Column(Integer, ForeignKey(
+        "players.id", ondelete="CASCADE"), nullable=False)
+    shown_card = Column(String, nullable=False)
+    created_at = Column(TIMESTAMP(timezone=True),
+                        nullable=False, server_default=text('CURRENT_TIMESTAMP'))
+
+    game = relationship("Game", back_populates="showings")
+    suggestion = relationship("Suggestion", back_populates="showings")
+    showing_player = relationship("Player", back_populates="showings")

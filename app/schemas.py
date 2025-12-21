@@ -112,6 +112,49 @@ class GameDetail(GameOut):
     players: List[PlayerOut] = []
 
 
+class TurnOrderUpdate(BaseModel):
+    player_ids: List[int]
+
+
+class SuggestionBase(BaseModel):
+    suspect: str
+    weapon: str
+    room: str
+
+
+class SuggestionCreate(SuggestionBase):
+    suggester_id: int
+
+
+class SuggestionOut(SuggestionBase):
+    id: int
+    game_id: int
+    suggester_id: int
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
+
+
+class ShowingBase(BaseModel):
+    suggestion_id: int
+    showing_player_id: int
+    shown_card: str
+
+
+class ShowingCreate(ShowingBase):
+    pass
+
+
+class ShowingOut(ShowingBase):
+    id: int
+    game_id: int
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
+
+
 class SimulationOverride(BaseModel):
     player_id: int
     strategy_key: str
