@@ -36,3 +36,33 @@ class Vote(Base):
         "users.id", ondelete="CASCADE"), primary_key=True)
     post_id = Column(Integer, ForeignKey(
         "posts.id", ondelete="CASCADE"), primary_key=True)
+
+
+class Game(Base):
+    __tablename__ = "games"
+
+    id = Column(Integer, primary_key=True, nullable=False)
+    name = Column(String, nullable=False)
+    status = Column(String, nullable=False, server_default="setup")
+    created_at = Column(TIMESTAMP(timezone=True),
+                        nullable=False, server_default=text('CURRENT_TIMESTAMP'))
+    owner_id = Column(Integer, ForeignKey(
+        "users.id", ondelete="SET NULL"), nullable=True)
+
+    owner = relationship("User")
+    players = relationship("Player", back_populates="game",
+                           cascade="all, delete-orphan")
+
+
+class Player(Base):
+    __tablename__ = "players"
+
+    id = Column(Integer, primary_key=True, nullable=False)
+    game_id = Column(Integer, ForeignKey(
+        "games.id", ondelete="CASCADE"), nullable=False)
+    name = Column(String, nullable=False)
+    seat_order = Column(Integer, nullable=False)
+    created_at = Column(TIMESTAMP(timezone=True),
+                        nullable=False, server_default=text('CURRENT_TIMESTAMP'))
+
+    game = relationship("Game", back_populates="players")

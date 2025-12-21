@@ -118,3 +118,23 @@ def test_posts(test_user, session, test_user2):
 
     posts = session.query(models.Post).all()
     return posts
+
+
+@pytest.fixture
+def test_games(test_user, test_user2, session):
+    games_data = [
+        {"name": "Friday Night Mystery", "owner_id": test_user["id"]},
+        {"name": "Weekend Sleuthing", "owner_id": test_user["id"]},
+        {"name": "Second Table", "owner_id": test_user2["id"]},
+    ]
+
+    def create_game_model(game):
+        return models.Game(**game)
+
+    games_map = map(create_game_model, games_data)
+    games = list(games_map)
+
+    session.add_all(games)
+    session.commit()
+
+    return session.query(models.Game).all()

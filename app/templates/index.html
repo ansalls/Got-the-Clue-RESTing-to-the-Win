@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Got the Clue</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">Clue • Knowledge Tracker</p>
+          <h1>Got the Clue</h1>
+          <p class="subtitle">
+            Capture every suggestion, track what each player knows, and converge
+            on the solution faster.
+          </p>
+        </div>
+        <div class="hero-card">
+          <h2>Start a game</h2>
+          <form class="game-form" method="post" action="/ui/games">
+            <label for="name">Game name</label>
+            <input id="name" name="name" type="text" placeholder="Friday Night Mystery" />
+            {% if error %}
+              <p class="error">{{ error }}</p>
+            {% endif %}
+            <button type="submit">Create game</button>
+          </form>
+        </div>
+      </header>
+
+      <section class="content">
+        <div class="panel">
+          <h3>Active games</h3>
+          {% if games %}
+            <ul class="game-list">
+              {% for game in games %}
+                <li>
+                  <div>
+                    <strong>{{ game.name }}</strong>
+                    <span class="status">{{ game.status }}</span>
+                  </div>
+                  <small>Game #{{ game.id }}</small>
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="empty">No games yet. Start one to begin tracking clues.</p>
+          {% endif %}
+        </div>
+
+        <div class="panel info">
+          <h3>Next steps</h3>
+          <ol>
+            <li>Add players and their seat order.</li>
+            <li>Log every suggestion and reveal.</li>
+            <li>Watch deductions emerge automatically.</li>
+          </ol>
+          <p class="note">
+            API endpoints are still expanding. Games you create here are stored in
+            the same database used by the REST API.
+          </p>
+        </div>
+      </section>
+    </div>
+  </body>
+</html>

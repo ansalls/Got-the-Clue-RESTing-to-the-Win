@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 
 from pydantic.types import conint
 
@@ -70,3 +70,43 @@ class TokenData(BaseModel):
 class Vote(BaseModel):
     post_id: int
     dir: conint(ge=0, le=1)
+
+
+class GameBase(BaseModel):
+    name: str
+
+
+class GameCreate(GameBase):
+    pass
+
+
+class GameOut(GameBase):
+    id: int
+    status: str
+    created_at: datetime
+    owner_id: Optional[int]
+
+    class Config:
+        orm_mode = True
+
+
+class PlayerBase(BaseModel):
+    name: str
+    seat_order: conint(ge=1)
+
+
+class PlayerCreate(PlayerBase):
+    pass
+
+
+class PlayerOut(PlayerBase):
+    id: int
+    game_id: int
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
+
+
+class GameDetail(GameOut):
+    players: List[PlayerOut] = []

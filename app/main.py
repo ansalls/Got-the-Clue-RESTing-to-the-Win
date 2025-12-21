@@ -1,15 +1,18 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from . import models
 from .database import engine
-from .routers import post, user, auth, vote
+from .routers import post, user, auth, vote, game, ui
 from .config import settings
 
 
 # models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 origins = ["*"]
 
@@ -25,6 +28,8 @@ app.include_router(post.router)
 app.include_router(user.router)
 app.include_router(auth.router)
 app.include_router(vote.router)
+app.include_router(game.router)
+app.include_router(ui.router)
 
 
 @app.get("/")
