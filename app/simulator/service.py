@@ -102,7 +102,7 @@ def run_simulation(
     for _ in range(iterations):
         simulation_players = [
             SimulationPlayer(
-                name=f\"{assignment.name}#{assignment.player_id}\",
+                name=f"{assignment.name}#{assignment.player_id}",
                 strategy_key=assignment.strategy_key,
                 is_user=assignment.is_user,
             )
