@@ -59,3 +59,7 @@ def test_ui_homepage(client):
 
     assert res.status_code == 200
     assert "Got the Clue" in res.text
+    assert "Investigation dashboard" in res.text
+    assert "Player hands" in res.text
+    assert "Envelope probabilities" in res.text
+    assert "Suggestion timeline" in res.text

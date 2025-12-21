@@ -63,6 +63,151 @@
           </p>
         </div>
       </section>
+
+      <section class="dashboard">
+        <div class="section-header">
+          <p class="eyebrow">Live deductions</p>
+          <h2>Investigation dashboard</h2>
+          <p class="section-subtitle">
+            Stay aligned on the latest knowledge. Known cards stay visible, unknown slots
+            are highlighted, and the envelope odds sharpen with every reveal.
+          </p>
+        </div>
+        <div class="dashboard-grid">
+          <article class="panel dashboard-panel">
+            <div class="panel-header">
+              <h3>Player hands</h3>
+              <span class="panel-pill">Known vs. unknown</span>
+            </div>
+            <div class="hands">
+              <div class="hand-card">
+                <div class="hand-header">
+                  <div>
+                    <h4>Alex (You)</h4>
+                    <p class="hand-role">Seat 1 · Lead investigator</p>
+                  </div>
+                  <span class="seat">3 cards</span>
+                </div>
+                <ul class="card-list">
+                  <li class="known">Professor Plum</li>
+                  <li class="known">Rope</li>
+                  <li class="known">Library</li>
+                </ul>
+              </div>
+              <div class="hand-card">
+                <div class="hand-header">
+                  <div>
+                    <h4>Jordan</h4>
+                    <p class="hand-role">Seat 2 · Narrowing suspects</p>
+                  </div>
+                  <span class="seat">3 cards</span>
+                </div>
+                <ul class="card-list">
+                  <li class="known">Miss Scarlet</li>
+                  <li class="unknown">Unknown</li>
+                  <li class="unknown">Unknown</li>
+                </ul>
+                <div class="unknown-row">
+                  <span>2 unknown slots</span>
+                  <div class="unknown-dots" aria-hidden="true">
+                    <span></span>
+                    <span></span>
+                  </div>
+                </div>
+              </div>
+              <div class="hand-card">
+                <div class="hand-header">
+                  <div>
+                    <h4>Riley</h4>
+                    <p class="hand-role">Seat 3 · Disproving rooms</p>
+                  </div>
+                  <span class="seat">3 cards</span>
+                </div>
+                <ul class="card-list">
+                  <li class="known">Kitchen</li>
+                  <li class="known">Wrench</li>
+                  <li class="unknown">Unknown</li>
+                </ul>
+                <div class="unknown-row">
+                  <span>1 unknown slot</span>
+                  <div class="unknown-dots" aria-hidden="true">
+                    <span></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="panel dashboard-panel">
+            <div class="panel-header">
+              <h3>Envelope probabilities</h3>
+              <span class="panel-pill">Highest likelihood</span>
+            </div>
+            <div class="probability-group">
+              <div class="probability-item">
+                <div class="probability-header">
+                  <span>Suspect</span>
+                  <strong>Mrs. Peacock · 52%</strong>
+                </div>
+                <div class="probability-bar" role="img" aria-label="Mrs. Peacock at 52% likelihood">
+                  <span style="width: 52%"></span>
+                </div>
+                <p class="probability-note">Only Jordan could disprove this suspect.</p>
+              </div>
+              <div class="probability-item">
+                <div class="probability-header">
+                  <span>Weapon</span>
+                  <strong>Lead Pipe · 43%</strong>
+                </div>
+                <div class="probability-bar" role="img" aria-label="Lead Pipe at 43% likelihood">
+                  <span style="width: 43%"></span>
+                </div>
+                <p class="probability-note">Two unverified cards remain for Riley.</p>
+              </div>
+              <div class="probability-item">
+                <div class="probability-header">
+                  <span>Room</span>
+                  <strong>Conservatory · 61%</strong>
+                </div>
+                <div class="probability-bar" role="img" aria-label="Conservatory at 61% likelihood">
+                  <span style="width: 61%"></span>
+                </div>
+                <p class="probability-note">No player has shown this room yet.</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="panel dashboard-panel">
+            <div class="panel-header">
+              <h3>Suggestion timeline</h3>
+              <span class="panel-pill">Last 3 turns</span>
+            </div>
+            <ol class="timeline">
+              <li>
+                <div class="timeline-marker"></div>
+                <div>
+                  <p class="timeline-title">Alex suggested <strong>Peacock · Lead Pipe · Conservatory</strong></p>
+                  <p class="timeline-meta">Riley showed a card · 7:42 PM</p>
+                </div>
+              </li>
+              <li>
+                <div class="timeline-marker"></div>
+                <div>
+                  <p class="timeline-title">Jordan suggested <strong>Scarlet · Rope · Ballroom</strong></p>
+                  <p class="timeline-meta">No one could disprove · 7:39 PM</p>
+                </div>
+              </li>
+              <li>
+                <div class="timeline-marker"></div>
+                <div>
+                  <p class="timeline-title">Riley suggested <strong>Plum · Wrench · Lounge</strong></p>
+                  <p class="timeline-meta">Alex showed a card · 7:36 PM</p>
+                </div>
+              </li>
+            </ol>
+          </article>
+        </div>
+      </section>
     </div>
   </body>
 </html>
